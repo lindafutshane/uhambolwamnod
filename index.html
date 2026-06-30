@@ -6,68 +6,85 @@
 <meta name="theme-color" content="#6b5ce7">
 <title>My Journal</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%94%3C/text%3E%3C/svg%3E">
-
-<!-- PWA manifest (inlined as a blob at runtime) -->
 <style>
 :root{
-  --accent:#6b5ce7; --accent-soft:#efedfd; --bg:#f6f5fb; --card:#ffffff;
-  --text:#23202e; --muted:#7a7689; --line:#e7e4f0; --danger:#e2554f;
+  --accent:#6b5ce7; --accent-soft:#efedfd;
+  --bg:#f6f5fb; --card:#ffffff; --text:#23202e; --muted:#7a7689; --line:#e7e4f0;
+  --danger:#e2554f; --good:#39b37d;
   --shadow:0 6px 24px rgba(60,50,120,.08); --radius:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+[data-theme="dark"]{
+  --accent:#9d8cff; --accent-soft:#2b2740;
+  --bg:#15131f; --card:#211d2e; --text:#ece9f5; --muted:#9a93b0; --line:#332d47;
+  --shadow:0 6px 24px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--bg); color:var(--text); line-height:1.5;
-  padding-bottom:env(safe-area-inset-bottom);
-}
-button{font-family:inherit;cursor:pointer;border:none;background:none}
-input,textarea,select{font-family:inherit;font-size:16px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;transition:background .25s,color .25s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:16px;color:var(--text)}
 
-/* Layout */
-.app{max-width:880px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
-header.topbar{
-  position:sticky;top:0;z-index:20;background:rgba(246,245,251,.9);backdrop-filter:blur(10px);
-  padding:14px 18px calc(14px + env(safe-area-inset-top)); padding-top:max(14px,env(safe-area-inset-top));
-  display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)
-}
+.app{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+header.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);
+  backdrop-filter:blur(10px);padding:14px 18px;padding-top:max(14px,env(safe-area-inset-top));
+  display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
 .brand .logo{font-size:22px}
 .topbar .spacer{flex:1}
-.gbtn{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
-  padding:8px 12px;border-radius:999px;font-size:14px;font-weight:600;color:var(--text)}
+.gbtn{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-size:14px;font-weight:600}
 .gbtn:hover{border-color:var(--accent)}
-.iconbtn{width:40px;height:40px;border-radius:999px;background:var(--card);border:1px solid var(--line);
-  display:flex;align-items:center;justify-content:center;font-size:18px}
+.iconbtn{width:40px;height:40px;border-radius:999px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:18px}
 .iconbtn:hover{border-color:var(--accent)}
 
-main{flex:1;padding:18px;display:flex;flex-direction:column;gap:18px}
-
-/* Sync status pill */
-.syncpill{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);
-  background:var(--card);border:1px solid var(--line);padding:5px 11px;border-radius:999px;align-self:flex-start}
+main{flex:1;padding:18px;display:flex;flex-direction:column;gap:16px}
+.syncpill{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:5px 11px;border-radius:999px}
 .dot{width:8px;height:8px;border-radius:50%;background:#bbb}
-.dot.local{background:#f0a500}.dot.synced{background:#39b37d}.dot.syncing{background:var(--accent);animation:pulse 1s infinite}
+.dot.local{background:#f0a500}.dot.synced{background:var(--good)}.dot.syncing{background:var(--accent);animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.35}}
 
-/* Composer card */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* On this day */
+.otd{padding:14px 16px}
+.otd h3{margin:0 0 8px;font-size:14px;color:var(--accent);text-transform:uppercase;letter-spacing:.03em}
+.otd .memory{font-size:14px;color:var(--text);padding:8px 0;border-top:1px solid var(--line);cursor:pointer}
+.otd .memory:first-of-type{border-top:none}
+.otd .memory b{color:var(--accent)}
+
+/* Composer */
 .composer{padding:16px}
 .composer h2{margin:0 0 12px;font-size:15px;color:var(--muted);font-weight:600;letter-spacing:.02em;text-transform:uppercase}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:12.5px;color:var(--muted);font-weight:600}
-input[type=date],input.titlein{
-  border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fbfaff;color:var(--text)
-}
+input[type=date],input.titlein,input.tagin,input.pinin{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
 input.titlein{flex:1;min-width:180px}
-textarea#body{
-  width:100%;min-height:150px;border:1px solid var(--line);border-radius:12px;padding:14px;resize:vertical;
-  background:#fbfaff;color:var(--text);line-height:1.6
-}
-textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
 
-.emojibar{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}
+.moodrow{display:flex;gap:6px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.moodrow .lbl{font-size:12.5px;color:var(--muted);font-weight:600;margin-right:4px}
+.moodbtn{font-size:24px;padding:4px 7px;border-radius:10px;border:1px solid transparent;line-height:1;filter:grayscale(.6);opacity:.7}
+.moodbtn:hover{filter:none;opacity:1}
+.moodbtn.sel{filter:none;opacity:1;border-color:var(--accent);background:var(--accent-soft)}
+
+.toolbar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.toolbar button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:700;min-width:34px}
+.toolbar button:hover{border-color:var(--accent);color:var(--accent)}
+.toolbar button.mic.live{background:var(--danger);color:#fff;border-color:var(--danger)}
+.toolbar .sep{width:1px;background:var(--line);margin:2px 4px}
+
+.editor{width:100%;min-height:150px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg);line-height:1.6;overflow:auto}
+.editor:empty:before{content:attr(data-ph);color:var(--muted)}
+.editor:focus,input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.editor h3{margin:.4em 0;font-size:1.15em}
+.editor ul{margin:.4em 0;padding-left:1.3em}
+
+.tagwrap{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px}
+.chip .x{cursor:pointer;font-weight:700}
+
+.emojibar{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
 .emojibar button{font-size:20px;padding:4px 6px;border-radius:8px;line-height:1}
 .emojibar button:hover{background:var(--accent-soft)}
 .emojibar .more{font-size:13px;font-weight:600;color:var(--accent);padding:0 8px}
@@ -77,7 +94,6 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
 .ghost:hover{border-color:var(--accent);color:var(--accent)}
 .primary{background:var(--accent);color:#fff;padding:11px 20px;border-radius:10px;font-weight:700;font-size:15px}
 .primary:hover{filter:brightness(1.05)}
-.primary:disabled{opacity:.5;cursor:default}
 .toolsrow .spacer{flex:1}
 
 .thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -85,20 +101,29 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
 .thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .thumb .x{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center}
 
-/* Entries list */
-.entries{display:flex;flex-direction:column;gap:14px}
-.listhead{display:flex;align-items:center;gap:10px}
+/* List header & controls */
+.listhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .listhead h2{margin:0;font-size:17px}
 .listhead .count{color:var(--muted);font-size:14px}
-.search{margin-left:auto;border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:var(--card);min-width:140px}
+.viewtoggle{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.viewtoggle button{padding:7px 14px;font-size:13px;font-weight:600;color:var(--muted)}
+.viewtoggle button.on{background:var(--accent);color:#fff}
+.search{margin-left:auto;border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:var(--card);min-width:130px}
+.filterchips{display:flex;gap:6px;flex-wrap:wrap}
+.filterchips .fc{font-size:12.5px;border:1px solid var(--line);background:var(--card);padding:5px 11px;border-radius:999px;font-weight:600;color:var(--muted)}
+.filterchips .fc.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-.entry{padding:16px;cursor:default}
+/* Entry card */
+.entry{padding:16px}
 .entry .meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
 .entry .date{font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+.entry .mood{font-size:18px}
 .entry .title{font-size:18px;font-weight:700;margin:2px 0 6px}
-.entry .text{white-space:pre-wrap;color:#36323f}
+.entry .text{color:var(--text);overflow-wrap:anywhere}
+.entry .text ul{padding-left:1.3em}
+.entry .etags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .entry .photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.entry .photos img{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.entry .photos img{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);cursor:pointer}
 .entry .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .entry .actions button{font-size:13px;font-weight:600;color:var(--muted);padding:6px 11px;border:1px solid var(--line);border-radius:8px}
 .entry .actions button:hover{border-color:var(--accent);color:var(--accent)}
@@ -107,30 +132,73 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
 .empty{text-align:center;color:var(--muted);padding:40px 20px}
 .empty .big{font-size:42px;margin-bottom:8px}
 
-/* Modal (settings / emoji full) */
-.overlay{position:fixed;inset:0;background:rgba(35,30,55,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}
+/* Calendar */
+.cal{padding:16px}
+.calhead{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:12px}
+.calhead button{font-size:18px;width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--card)}
+.calhead .mlabel{font-weight:700;font-size:16px;min-width:160px;text-align:center}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calgrid .dow{text-align:center;font-size:11px;color:var(--muted);font-weight:700;padding:4px 0}
+.calcell{aspect-ratio:1;border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;position:relative;background:var(--bg)}
+.calcell.empty{border:none;background:transparent}
+.calcell.has{cursor:pointer;border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+.calcell.today{outline:2px solid var(--accent)}
+.calcell .cmood{font-size:14px;position:absolute;bottom:3px}
+.calcell .cn{position:absolute;top:3px;right:5px;font-size:10px;color:var(--muted)}
+
+/* Trends */
+.trends{padding:16px}
+.trends h3{margin:0 0 4px;font-size:16px}
+.trends .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+.spark{width:100%;height:120px}
+.moodcounts{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
+.moodcounts .mc{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
+.moodcounts .mc b{color:var(--text)}
+
+/* Overlays / modals */
+.overlay{position:fixed;inset:0;background:rgba(20,16,35,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}
 .overlay.open{display:flex}
-.modal{background:var(--card);border-radius:18px;max-width:460px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.modal .mhead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.modal{background:var(--card);border-radius:18px;max-width:480px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal .mhead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;position:sticky;top:0;background:var(--card)}
 .modal .mhead h3{margin:0;font-size:17px}
 .modal .mhead .x{margin-left:auto;font-size:22px;color:var(--muted)}
-.modal .mbody{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.modal .mbody{padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.setblock{display:flex;flex-direction:column;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.setblock:last-child{border-bottom:none;padding-bottom:0}
+.setblock h4{margin:0;font-size:14px}
 .modal label{font-size:13px;font-weight:600;color:var(--muted)}
-.modal input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;background:#fbfaff}
+.modal input[type=text],.modal input[type=password]{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;background:var(--bg)}
 .help{font-size:13px;color:var(--muted);line-height:1.6}
-.help a{color:var(--accent)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+.sw.sel{border-color:var(--text)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;padding:9px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--accent);color:#fff}
 .emojigrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}
 .emojigrid button{font-size:22px;padding:6px 0;border-radius:8px}
 .emojigrid button:hover{background:var(--accent-soft)}
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#23202e;color:#fff;
-  padding:11px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;z-index:80;pointer-events:none}
+/* Lock screen */
+.lock{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px}
+.lock.open{display:flex}
+.lock .logo{font-size:54px}
+.lock h2{margin:0;font-size:20px}
+.lock .pininput{font-size:28px;letter-spacing:14px;text-align:center;width:200px;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--card)}
+.lock .err{color:var(--danger);font-size:14px;min-height:18px}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:90;padding:20px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:100%;max-height:100%;border-radius:10px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#23202e;color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;z-index:120;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media (max-width:560px){
   main{padding:14px}
   .entry .photos img{width:30%;height:auto;aspect-ratio:1}
-  .search{min-width:110px}
+  .search{min-width:100%;margin:8px 0 0}
 }
 </style>
 </head>
@@ -140,11 +208,15 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
     <div class="brand"><span class="logo">📔</span><span>My Journal</span></div>
     <div class="spacer"></div>
     <span id="syncPill" class="syncpill"><span id="syncDot" class="dot local"></span><span id="syncText">On this device</span></span>
+    <button class="iconbtn" id="themeBtn" title="Toggle dark mode">🌙</button>
+    <button class="iconbtn" id="statsBtn" title="Mood trends">📊</button>
     <button class="iconbtn" id="settingsBtn" title="Settings">⚙️</button>
     <button class="gbtn" id="authBtn">Sign in</button>
   </header>
 
   <main>
+    <section class="card otd" id="otd" style="display:none"></section>
+
     <!-- Composer -->
     <section class="card composer">
       <h2 id="composerTitle">New entry</h2>
@@ -158,9 +230,26 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
           <input type="text" id="entryTitle" class="titlein" placeholder="A line to remember this by…">
         </div>
       </div>
-      <textarea id="body" placeholder="What's on your mind today?"></textarea>
+
+      <div class="moodrow" id="moodRow"><span class="lbl">Mood</span></div>
+
+      <div class="toolbar">
+        <button type="button" data-cmd="bold" title="Bold">B</button>
+        <button type="button" data-cmd="italic" title="Italic" style="font-style:italic">I</button>
+        <button type="button" data-cmd="h" title="Heading">H</button>
+        <button type="button" data-cmd="ul" title="Bullet list">•</button>
+        <span class="sep"></span>
+        <button type="button" class="mic" id="micBtn" title="Voice dictation">🎤</button>
+      </div>
+      <div class="editor" id="body" contenteditable="true" data-ph="What's on your mind today?"></div>
 
       <div class="emojibar" id="emojiBar"></div>
+
+      <div class="tagwrap">
+        <label>Tags</label>
+        <input type="text" class="tagin" id="tagInput" placeholder="Type a tag and press Enter (e.g. gratitude)">
+        <div class="chips" id="draftTags"></div>
+      </div>
 
       <div class="thumbs" id="thumbs"></div>
 
@@ -173,13 +262,19 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
       </div>
     </section>
 
-    <!-- Entries -->
-    <section class="entries">
+    <!-- Entries / Calendar -->
+    <section>
       <div class="listhead">
         <h2>Entries</h2><span class="count" id="count">0</span>
+        <div class="viewtoggle">
+          <button id="viewList" class="on">List</button>
+          <button id="viewCal">Calendar</button>
+        </div>
         <input type="search" class="search" id="search" placeholder="Search…">
       </div>
-      <div id="list"></div>
+      <div class="filterchips" id="tagFilters" style="margin-top:10px"></div>
+      <div id="list" style="margin-top:14px;display:flex;flex-direction:column;gap:14px"></div>
+      <div id="calendar" class="card cal" style="display:none;margin-top:14px"></div>
     </section>
   </main>
 </div>
@@ -189,22 +284,62 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
   <div class="modal">
     <div class="mhead"><h3>⚙️ Settings</h3><button class="x" data-close>×</button></div>
     <div class="mbody">
-      <div>
+      <div class="setblock">
+        <h4>Appearance</h4>
+        <label>Theme</label>
+        <div class="seg" id="themeSeg"><button data-theme-val="light" class="on">Light</button><button data-theme-val="dark">Dark</button></div>
+        <label>Accent colour</label>
+        <div class="swatches" id="accentSwatches"></div>
+        <label>Font</label>
+        <div class="seg" id="fontSeg">
+          <button data-font="sans" class="on">Sans</button>
+          <button data-font="serif">Serif</button>
+          <button data-font="rounded">Rounded</button>
+        </div>
+      </div>
+
+      <div class="setblock">
+        <h4>App lock</h4>
+        <p class="help" id="lockStatus">No PIN set. A PIN asks for a code each time the journal opens on this device.</p>
+        <input type="password" id="pinSet" inputmode="numeric" maxlength="6" placeholder="Set a 4–6 digit PIN">
+        <div class="row" style="gap:8px;margin:0">
+          <button class="ghost" id="savePin">Set / change PIN</button>
+          <button class="ghost" id="removePin">Remove PIN</button>
+        </div>
+      </div>
+
+      <div class="setblock">
+        <h4>Backup &amp; export</h4>
+        <p class="help" id="backupStatus">Auto-backup keeps a safety copy on this device.</p>
+        <div class="row" style="gap:8px;margin:0">
+          <button class="ghost" id="exportAll">⬇️ Export all (JSON)</button>
+          <button class="ghost" id="importBtn">⬆️ Import backup</button>
+          <button class="ghost" id="restoreBackup">↩️ Restore auto-backup</button>
+          <input type="file" id="importInput" accept="application/json" hidden>
+        </div>
+        <button class="ghost" id="bookPdf">📖 Download whole journal as PDF</button>
+      </div>
+
+      <div class="setblock">
+        <h4>Google sign-in (advanced)</h4>
         <label for="clientId">Google OAuth Client ID</label>
         <input type="text" id="clientId" placeholder="xxxxxxxx.apps.googleusercontent.com">
-        <p class="help">Paste the Client ID from your Google Cloud project to enable sign-in and Drive sync across devices. See the included <strong>SETUP-GUIDE</strong> for the 5-minute steps. Leave blank to keep everything on this device only.</p>
+        <p class="help">Pre-filled and working. Only change this if you move the app to a different Google project.</p>
+        <button class="ghost" id="saveClient">Save Client ID</button>
       </div>
-      <div class="row" style="gap:10px">
-        <button class="ghost" id="exportAll">⬇️ Export all (JSON backup)</button>
-        <button class="ghost" id="importBtn">⬆️ Import backup</button>
-        <input type="file" id="importInput" accept="application/json" hidden>
-      </div>
-      <button class="primary" id="saveSettings">Save settings</button>
     </div>
   </div>
 </div>
 
-<!-- PDF export options modal -->
+<!-- Trends modal -->
+<div class="overlay" id="statsOverlay">
+  <div class="modal">
+    <div class="mhead"><h3>📊 Mood trends</h3><button class="x" data-close>×</button></div>
+    <div class="mbody"><div class="trends" id="trendsBody"></div></div>
+  </div>
+</div>
+
+<!-- PDF chooser -->
 <div class="overlay" id="pdfOverlay">
   <div class="modal">
     <div class="mhead"><h3>📄 Download PDF</h3><button class="x" data-close>×</button></div>
@@ -220,7 +355,7 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
   </div>
 </div>
 
-<!-- Full emoji modal -->
+<!-- Emoji modal -->
 <div class="overlay" id="emojiOverlay">
   <div class="modal">
     <div class="mhead"><h3>Pick an emoji</h3><button class="x" data-close>×</button></div>
@@ -228,439 +363,461 @@ textarea#body:focus,input:focus{outline:2px solid var(--accent-soft);border-colo
   </div>
 </div>
 
+<!-- Lock screen -->
+<div class="lock" id="lockScreen">
+  <div class="logo">🔒</div>
+  <h2>Enter your PIN</h2>
+  <input type="password" class="pininput" id="lockInput" inputmode="numeric" maxlength="6" autocomplete="off">
+  <div class="err" id="lockErr"></div>
+</div>
+
+<div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt=""></div>
 <div class="toast" id="toast"></div>
 
-<!-- Google libraries (only used once a Client ID is configured) -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js" async defer></script>
-<!-- PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 "use strict";
-/* ============================================================
-   My Journal — single-file web/mobile app
-   Storage: local-first (localStorage) with optional Google Drive sync.
-   ============================================================ */
+/* ===================== My Journal ===================== */
+const LS_ENTRIES="journal.entries.v1";
+const LS_CLIENTID="journal.googleClientId";
+const LS_PDFPHOTOS="journal.pdfIncludePhotos";
+const LS_THEME="journal.theme";
+const LS_ACCENT="journal.accent";
+const LS_FONT="journal.font";
+const LS_PIN="journal.pinHash";
+const LS_BACKUP="journal.autobackup";
+const LS_VIEW="journal.view";
+const DRIVE_FILENAME="journal-data.json";
+const SCOPES="https://www.googleapis.com/auth/drive.appdata";
 
-const LS_ENTRIES = "journal.entries.v1";
-const LS_CLIENTID = "journal.googleClientId";
-const LS_PDFPHOTOS = "journal.pdfIncludePhotos";  // "1" / "0"
-const DRIVE_FILENAME = "journal-data.json";   // stored in Drive appDataFolder
-const SCOPES = "https://www.googleapis.com/auth/drive.appdata";
+// Baked-in Client ID — every device works with zero setup. (Public identifier, safe to embed.)
+const DEFAULT_CLIENT_ID="1033173407311-s4nf1e5hekohneso9n5pura3aqdi4rm4.apps.googleusercontent.com";
+let clientId = (localStorage.getItem(LS_CLIENTID)||"").includes(".apps.googleusercontent.com")
+  ? localStorage.getItem(LS_CLIENTID) : DEFAULT_CLIENT_ID;
+try{ localStorage.setItem(LS_CLIENTID, clientId); }catch(e){}
 
-let entries = [];          // [{id, date, title, body, photos:[dataURL], updated}]
-let draftPhotos = [];      // photos staged in composer
-let editingId = null;      // entry being edited, or null
-// Your Google OAuth Client ID is baked in so EVERY device works with zero per-device setup.
-// (A Client ID is a public identifier — safe to include in the page.)
-const DEFAULT_CLIENT_ID = "1033173407311-s4nf1e5hekohneso9n5pura3aqdi4rm4.apps.googleusercontent.com";
-// Always trust the baked-in ID; ignore any stale/corrupted value a device may have saved before.
-let clientId = DEFAULT_CLIENT_ID;
-try{ localStorage.setItem(LS_CLIENTID, DEFAULT_CLIENT_ID); }catch(e){}
-let tokenClient = null;
-let accessToken = null;
-let gapiReady = false, gisReady = false;
-let driveFileId = null;
+const MOODS=[{v:1,e:"😞",t:"Rough"},{v:2,e:"😕",t:"Low"},{v:3,e:"😐",t:"Okay"},{v:4,e:"🙂",t:"Good"},{v:5,e:"😄",t:"Great"}];
+const FONTS={sans:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif',
+  serif:'Georgia,"Times New Roman",serif', rounded:'"Trebuchet MS","Segoe UI",system-ui,sans-serif'};
+const ACCENTS=["#6b5ce7","#e0567f","#2fa3a3","#e08a2f","#4a86e8","#5aa84a","#8a5cf6","#d24b6a"];
 
-/* ---------- helpers ---------- */
-const $ = s => document.querySelector(s);
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-function todayISO(){ const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10); }
-function fmtDate(iso){
-  if(!iso) return "";
-  const [y,m,d] = iso.split("-").map(Number);
-  const dt = new Date(y,m-1,d);
-  return dt.toLocaleDateString(undefined,{weekday:"short",year:"numeric",month:"long",day:"numeric"});
-}
-function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
-function escapeHtml(s){ return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+let entries=[], draftPhotos=[], draftTags=[], draftMood=null, editingId=null;
+let view=localStorage.getItem(LS_VIEW)||"list";
+let activeTagFilter=null, calMonth=null;
+let tokenClient=null, accessToken=null, gapiReady=false, driveFileId=null;
 
-/* ---------- persistence ---------- */
-function loadLocal(){ try{ entries = JSON.parse(localStorage.getItem(LS_ENTRIES)) || []; }catch(e){ entries=[]; } }
-function saveLocal(){ localStorage.setItem(LS_ENTRIES, JSON.stringify(entries)); }
-function persist(){ saveLocal(); render(); if(accessToken) syncToDrive(); }
-
-/* ---------- emoji ---------- */
-const QUICK_EMOJI = ["😀","😊","😍","🥰","😎","🤔","😢","😭","😡","😴","🥳","😌","🙏","💪","🔥","✨","❤️","💜","🌟","☀️","🌧️","🌈","🌙","🍀","🌸","☕","🎉","📌","✅","💡"];
-const FULL_EMOJI = ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤬","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫","🤥","😶","😐","😑","😬","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤","😪","😵","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👿","💀","👻","💩","🤡","👽","🙏","💪","👍","👎","👏","🙌","🤝","✌️","🤞","🤟","🤙","👋","✋","🖐️","👌","🫶","❤️","🧡","💛","💚","💙","💜","🤎","🖤","🤍","💔","❣️","💕","💞","💓","💗","💖","💘","💝","🔥","✨","⭐","🌟","💫","⚡","☀️","🌤️","⛅","🌧️","⛈️","🌈","❄️","🌙","⭐","🌸","🌷","🌹","🌻","🌼","🍀","🌱","🌲","🌳","🍂","🍁","☕","🍵","🍷","🍰","🎂","🍫","🎉","🎊","🎈","🎁","🏆","🥇","📌","📍","✅","☑️","❌","➡️","⬅️","💡","📖","✏️","📝","🗓️","⏰","🎵","🎶","🏃","🚶","🧘","💤","🌍","🏠","✈️","🚗","🏖️","⛰️","🌊"];
-
-function buildEmojiBar(){
-  const bar = $("#emojiBar"); bar.innerHTML="";
-  QUICK_EMOJI.forEach(e=>{ const b=document.createElement("button"); b.type="button"; b.textContent=e; b.onclick=()=>insertEmoji(e); bar.appendChild(b); });
-  const more=document.createElement("button"); more.type="button"; more.className="more"; more.textContent="more ▾"; more.onclick=openEmoji; bar.appendChild(more);
-}
-function buildEmojiGrid(){
-  const g=$("#emojiGrid"); g.innerHTML="";
-  FULL_EMOJI.forEach(e=>{ const b=document.createElement("button"); b.type="button"; b.textContent=e; b.onclick=()=>{ insertEmoji(e); closeOverlays(); }; g.appendChild(b); });
-}
-function insertEmoji(e){
-  const ta=$("#body"); const s=ta.selectionStart??ta.value.length, en=ta.selectionEnd??ta.value.length;
-  ta.value = ta.value.slice(0,s)+e+ta.value.slice(en); ta.focus();
-  const pos=s+e.length; ta.setSelectionRange(pos,pos);
-}
-
-/* ---------- photos ---------- */
-function fileToDataURL(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
-// Downscale large images so storage/sync stays light.
-function downscale(dataURL, max=1280, quality=0.82){
-  return new Promise(res=>{
-    const img=new Image();
-    img.onload=()=>{
-      let {width:w,height:h}=img;
-      if(w>max||h>max){ const r=Math.min(max/w,max/h); w=Math.round(w*r); h=Math.round(h*r); }
-      const c=document.createElement("canvas"); c.width=w; c.height=h;
-      c.getContext("2d").drawImage(img,0,0,w,h);
-      res(c.toDataURL("image/jpeg",quality));
-    };
-    img.onerror=()=>res(dataURL);
-    img.src=dataURL;
+/* helpers */
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function todayISO(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
+function fmtDate(iso){if(!iso)return"";const[y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:"short",year:"numeric",month:"long",day:"numeric"});}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2200);}
+function escapeHtml(s){return(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+// sanitize editor HTML: allow a tiny safe subset
+function sanitize(html){
+  const d=document.createElement("div"); d.innerHTML=html||"";
+  d.querySelectorAll("*").forEach(el=>{
+    if(!/^(B|STRONG|I|EM|U|H3|UL|OL|LI|BR|DIV|P|SPAN)$/.test(el.tagName)){ el.replaceWith(...el.childNodes); return; }
+    [...el.attributes].forEach(a=>el.removeAttribute(a.name));
   });
+  return d.innerHTML;
 }
-async function handleFiles(files){
-  for(const f of files){
-    if(!f.type.startsWith("image/")) continue;
-    const raw=await fileToDataURL(f);
-    const small=await downscale(raw);
-    draftPhotos.push(small);
-  }
-  renderThumbs();
+function htmlToText(html){
+  const d=document.createElement("div"); d.innerHTML=html||"";
+  d.querySelectorAll("li").forEach(li=>li.textContent="• "+li.textContent);
+  d.querySelectorAll("h3,p,div,li,br,ul").forEach(b=>b.insertAdjacentText("afterend","\n"));
+  return (d.textContent||"").replace(/\n{3,}/g,"\n\n").trim();
 }
-function renderThumbs(){
-  const t=$("#thumbs"); t.innerHTML="";
-  draftPhotos.forEach((p,i)=>{
-    const d=document.createElement("div"); d.className="thumb";
-    d.innerHTML=`<img src="${p}"><button class="x" type="button" title="Remove">×</button>`;
-    d.querySelector(".x").onclick=()=>{ draftPhotos.splice(i,1); renderThumbs(); };
-    t.appendChild(d);
-  });
+function isRich(e){ return e.rich || /<(b|i|em|strong|u|h3|ul|ol|li|p|div|br)\b/i.test(e.body||""); }
+
+/* persistence */
+function loadLocal(){try{entries=JSON.parse(localStorage.getItem(LS_ENTRIES))||[];}catch(e){entries=[];}}
+function saveLocal(){localStorage.setItem(LS_ENTRIES,JSON.stringify(entries)); autoBackup();}
+function persist(){saveLocal();renderAll();if(accessToken)syncToDrive();}
+function autoBackup(){
+  try{ localStorage.setItem(LS_BACKUP, JSON.stringify({ts:Date.now(),data:entries})); }catch(e){}
 }
 
-/* ---------- composer ---------- */
+/* ===================== Theme ===================== */
+function applyTheme(){
+  const theme=localStorage.getItem(LS_THEME)||"light";
+  const accent=localStorage.getItem(LS_ACCENT)||ACCENTS[0];
+  const font=localStorage.getItem(LS_FONT)||"sans";
+  document.documentElement.setAttribute("data-theme",theme);
+  document.documentElement.style.setProperty("--accent",accent);
+  document.documentElement.style.setProperty("--accent-soft", theme==="dark"?"#2b2740":hexSoft(accent));
+  document.documentElement.style.setProperty("--font",FONTS[font]||FONTS.sans);
+  $("#themeBtn").textContent = theme==="dark"?"☀️":"🌙";
+}
+function hexSoft(hex){ // light tint of accent
+  const n=parseInt(hex.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255;
+  const mix=(c)=>Math.round(c+(255-c)*0.86);
+  return `rgb(${mix(r)},${mix(g)},${mix(b)})`;
+}
+function toggleTheme(){ localStorage.setItem(LS_THEME, (localStorage.getItem(LS_THEME)||"light")==="dark"?"light":"dark"); applyTheme(); syncSettingsUI(); }
+
+/* ===================== Emoji ===================== */
+const QUICK_EMOJI=["😀","😊","😍","🥰","😎","🤔","😢","😭","😡","😴","🥳","😌","🙏","💪","🔥","✨","❤️","💜","🌟","☀️","🌧️","🌈","🌙","🍀","🌸","☕","🎉","📌","✅","💡"];
+const FULL_EMOJI=["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😋","😛","😜","🤪","🤨","🧐","🤓","😎","🥸","🤩","🥳","😏","😒","😞","😔","😟","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫","🤥","😶","😐","😑","😬","🙄","😯","😴","🤤","🥱","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👻","💀","🤡","👽","🙏","💪","👍","👎","👏","🙌","🤝","✌️","🤞","🤟","👋","✋","👌","🫶","❤️","🧡","💛","💚","💙","💜","🤎","🖤","🤍","💔","💕","💞","💗","💖","💘","💝","🔥","✨","⭐","🌟","💫","⚡","☀️","🌤️","⛅","🌧️","⛈️","🌈","❄️","🌙","🌸","🌷","🌹","🌻","🌼","🍀","🌱","🌳","🍂","🍁","☕","🍵","🍷","🍰","🎂","🍫","🎉","🎊","🎈","🎁","🏆","🥇","📌","📍","✅","☑️","❌","💡","📖","✏️","📝","🗓️","⏰","🎵","🏃","🧘","💤","🌍","🏠","✈️","🏖️","⛰️","🌊"];
+function buildEmojiBar(){const bar=$("#emojiBar");bar.innerHTML="";QUICK_EMOJI.forEach(e=>{const b=document.createElement("button");b.type="button";b.textContent=e;b.onclick=()=>insertHTML(e);bar.appendChild(b);});const m=document.createElement("button");m.type="button";m.className="more";m.textContent="more ▾";m.onclick=()=>$("#emojiOverlay").classList.add("open");bar.appendChild(m);}
+function buildEmojiGrid(){const g=$("#emojiGrid");g.innerHTML="";FULL_EMOJI.forEach(e=>{const b=document.createElement("button");b.type="button";b.textContent=e;b.onclick=()=>{insertHTML(e);closeOverlays();};g.appendChild(b);});}
+
+/* ===================== Rich editor ===================== */
+function insertHTML(text){
+  const ed=$("#body"); ed.focus();
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount&&ed.contains(sel.anchorNode)){
+    const r=sel.getRangeAt(0); r.deleteContents();
+    r.insertNode(document.createTextNode(text));
+    r.collapse(false); sel.removeAllRanges(); sel.addRange(r);
+  }else{ ed.appendChild(document.createTextNode(text)); }
+}
+function execCmd(cmd){
+  $("#body").focus();
+  if(cmd==="bold")document.execCommand("bold");
+  else if(cmd==="italic")document.execCommand("italic");
+  else if(cmd==="ul")document.execCommand("insertUnorderedList");
+  else if(cmd==="h")document.execCommand("formatBlock",false,"H3");
+}
+
+/* voice dictation */
+let recog=null,recOn=false;
+function setupVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ $("#micBtn").style.display="none"; return; }
+  recog=new SR(); recog.continuous=true; recog.interimResults=false; recog.lang=navigator.language||"en-US";
+  recog.onresult=e=>{ let t="";for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript; if(t)insertHTML(t.replace(/\s+$/,"")+" "); };
+  recog.onend=()=>{ recOn=false; $("#micBtn").classList.remove("live"); };
+  recog.onerror=()=>{ recOn=false; $("#micBtn").classList.remove("live"); };
+}
+function toggleVoice(){
+  if(!recog)return;
+  if(recOn){ recog.stop(); }
+  else{ try{ recog.start(); recOn=true; $("#micBtn").classList.add("live"); toast("Listening… speak now"); }catch(e){} }
+}
+
+/* ===================== Mood ===================== */
+function buildMoodRow(){
+  const row=$("#moodRow");
+  MOODS.forEach(m=>{const b=document.createElement("button");b.type="button";b.className="moodbtn";b.textContent=m.e;b.title=m.t;b.dataset.v=m.v;
+    b.onclick=()=>{ draftMood = draftMood===m.v?null:m.v; refreshMoodSel(); };
+    row.appendChild(b);});
+}
+function refreshMoodSel(){ $$("#moodRow .moodbtn").forEach(b=>b.classList.toggle("sel",Number(b.dataset.v)===draftMood)); }
+function moodEmoji(v){const m=MOODS.find(x=>x.v===v);return m?m.e:"";}
+
+/* ===================== Tags ===================== */
+function addDraftTag(raw){
+  const t=raw.trim().replace(/^#/,"").toLowerCase();
+  if(t&&!draftTags.includes(t)){ draftTags.push(t); renderDraftTags(); }
+}
+function renderDraftTags(){
+  const c=$("#draftTags"); c.innerHTML="";
+  draftTags.forEach((t,i)=>{const s=document.createElement("span");s.className="chip";s.innerHTML=`#${escapeHtml(t)} <span class="x">×</span>`;
+    s.querySelector(".x").onclick=()=>{draftTags.splice(i,1);renderDraftTags();};c.appendChild(s);});
+}
+function allTags(){const set=new Set();entries.forEach(e=>(e.tags||[]).forEach(t=>set.add(t)));return[...set].sort();}
+function renderTagFilters(){
+  const c=$("#tagFilters"); const tags=allTags(); c.innerHTML="";
+  if(!tags.length)return;
+  tags.forEach(t=>{const b=document.createElement("button");b.className="fc"+(activeTagFilter===t?" on":"");b.textContent="#"+t;
+    b.onclick=()=>{activeTagFilter=activeTagFilter===t?null:t;renderAll();};c.appendChild(b);});
+}
+
+/* ===================== Photos ===================== */
+function fileToDataURL(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f);});}
+function downscale(d,max=1280,q=.82){return new Promise(res=>{const img=new Image();img.onload=()=>{let{width:w,height:h}=img;if(w>max||h>max){const r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r);}const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);res(c.toDataURL("image/jpeg",q));};img.onerror=()=>res(d);img.src=d;});}
+async function handleFiles(files){for(const f of files){if(!f.type.startsWith("image/"))continue;draftPhotos.push(await downscale(await fileToDataURL(f)));}renderThumbs();}
+function renderThumbs(){const t=$("#thumbs");t.innerHTML="";draftPhotos.forEach((p,i)=>{const d=document.createElement("div");d.className="thumb";d.innerHTML=`<img src="${p}"><button class="x" type="button">×</button>`;d.querySelector(".x").onclick=()=>{draftPhotos.splice(i,1);renderThumbs();};t.appendChild(d);});}
+
+/* ===================== Composer ===================== */
 function resetComposer(){
-  editingId=null; draftPhotos=[];
-  $("#entryDate").value=todayISO();
-  $("#entryTitle").value=""; $("#body").value="";
-  $("#composerTitle").textContent="New entry";
-  $("#saveBtn").textContent="Save entry";
-  $("#cancelEdit").style.display="none";
-  renderThumbs();
+  editingId=null;draftPhotos=[];draftTags=[];draftMood=null;
+  $("#entryDate").value=todayISO();$("#entryTitle").value="";$("#body").innerHTML="";
+  $("#composerTitle").textContent="New entry";$("#saveBtn").textContent="Save entry";$("#cancelEdit").style.display="none";
+  refreshMoodSel();renderDraftTags();renderThumbs();
 }
 function saveEntry(){
   const date=$("#entryDate").value||todayISO();
   const title=$("#entryTitle").value.trim();
-  const body=$("#body").value.trim();
-  if(!body && !title && draftPhotos.length===0){ toast("Write something first ✍️"); return; }
-  if(editingId){
-    const e=entries.find(x=>x.id===editingId);
-    Object.assign(e,{date,title,body,photos:[...draftPhotos],updated:Date.now()});
-    toast("Entry updated");
-  }else{
-    entries.push({id:uid(),date,title,body,photos:[...draftPhotos],updated:Date.now()});
-    toast("Entry saved");
-  }
-  resetComposer(); persist();
+  const body=sanitize($("#body").innerHTML).trim();
+  const textCheck=htmlToText(body);
+  if(!textCheck&&!title&&draftPhotos.length===0){toast("Write something first ✍️");return;}
+  if(editingId){const e=entries.find(x=>x.id===editingId);Object.assign(e,{date,title,body,rich:true,mood:draftMood,tags:[...draftTags],photos:[...draftPhotos],updated:Date.now()});toast("Entry updated");}
+  else{entries.push({id:uid(),date,title,body,rich:true,mood:draftMood,tags:[...draftTags],photos:[...draftPhotos],updated:Date.now()});toast("Entry saved");}
+  resetComposer();persist();
 }
 function editEntry(id){
-  const e=entries.find(x=>x.id===id); if(!e) return;
-  editingId=id; draftPhotos=[...e.photos];
-  $("#entryDate").value=e.date; $("#entryTitle").value=e.title||""; $("#body").value=e.body||"";
-  $("#composerTitle").textContent="Edit entry"; $("#saveBtn").textContent="Update entry";
-  $("#cancelEdit").style.display=""; renderThumbs();
-  window.scrollTo({top:0,behavior:"smooth"});
+  const e=entries.find(x=>x.id===id);if(!e)return;
+  editingId=id;draftPhotos=[...(e.photos||[])];draftTags=[...(e.tags||[])];draftMood=e.mood||null;
+  $("#entryDate").value=e.date;$("#entryTitle").value=e.title||"";
+  $("#body").innerHTML=isRich(e)?sanitize(e.body):escapeHtml(e.body).replace(/\n/g,"<br>");
+  $("#composerTitle").textContent="Edit entry";$("#saveBtn").textContent="Update entry";$("#cancelEdit").style.display="";
+  refreshMoodSel();renderDraftTags();renderThumbs();window.scrollTo({top:0,behavior:"smooth"});
 }
-function deleteEntry(id){
-  if(!confirm("Delete this entry? This can't be undone.")) return;
-  entries=entries.filter(x=>x.id!==id);
-  if(editingId===id) resetComposer();
-  toast("Entry deleted"); persist();
-}
+function deleteEntry(id){if(!confirm("Delete this entry? This can't be undone."))return;entries=entries.filter(x=>x.id!==id);if(editingId===id)resetComposer();toast("Entry deleted");persist();}
 
-/* ---------- render ---------- */
-function sortedEntries(){
-  return [...entries].sort((a,b)=> (b.date.localeCompare(a.date)) || (b.updated-a.updated));
+/* ===================== Render ===================== */
+function sortedEntries(){return[...entries].sort((a,b)=>(b.date.localeCompare(a.date))||(b.updated-a.updated));}
+function renderAll(){ renderOnThisDay(); renderTagFilters(); $("#count").textContent=entries.length;
+  if(view==="calendar"){ $("#list").style.display="none"; $("#calendar").style.display=""; renderCalendar(); }
+  else{ $("#calendar").style.display="none"; $("#list").style.display="flex"; renderList(); }
 }
-function render(){
+function entryBodyHTML(e){ return isRich(e)?sanitize(e.body):`<div style="white-space:pre-wrap">${escapeHtml(e.body)}</div>`; }
+function renderList(){
   const q=($("#search").value||"").toLowerCase().trim();
   let list=sortedEntries();
-  if(q) list=list.filter(e=>((e.title||"")+" "+(e.body||"")+" "+e.date).toLowerCase().includes(q));
-  $("#count").textContent=entries.length;
+  if(activeTagFilter)list=list.filter(e=>(e.tags||[]).includes(activeTagFilter));
+  if(q)list=list.filter(e=>((e.title||"")+" "+htmlToText(e.body)+" "+(e.tags||[]).join(" ")+" "+e.date).toLowerCase().includes(q));
   const el=$("#list");
-  if(list.length===0){
-    el.innerHTML=`<div class="card empty"><div class="big">🌱</div>${q?"No entries match your search.":"No entries yet — your first thought goes a long way."}</div>`;
-    return;
-  }
+  if(!list.length){el.innerHTML=`<div class="card empty"><div class="big">🌱</div>${q||activeTagFilter?"No entries match.":"No entries yet — your first thought goes a long way."}</div>`;return;}
   el.innerHTML="";
   list.forEach(e=>{
-    const card=document.createElement("div"); card.className="card entry";
-    const photos=(e.photos||[]).map(p=>`<img src="${p}" alt="photo">`).join("");
-    card.innerHTML=`
-      <div class="meta"><span class="date">${fmtDate(e.date)}</span></div>
+    const card=document.createElement("div");card.className="card entry";
+    const photos=(e.photos||[]).map(p=>`<img src="${p}" data-lb="${p}">`).join("");
+    const tags=(e.tags||[]).map(t=>`<span class="chip">#${escapeHtml(t)}</span>`).join("");
+    card.innerHTML=`<div class="meta"><span class="date">${fmtDate(e.date)}</span>${e.mood?`<span class="mood" title="${MOODS.find(m=>m.v===e.mood).t}">${moodEmoji(e.mood)}</span>`:""}</div>
       ${e.title?`<div class="title">${escapeHtml(e.title)}</div>`:""}
-      <div class="text">${escapeHtml(e.body)}</div>
+      <div class="text">${entryBodyHTML(e)}</div>
+      ${tags?`<div class="etags">${tags}</div>`:""}
       ${photos?`<div class="photos">${photos}</div>`:""}
-      <div class="actions">
-        <button data-act="pdf">⬇️ PDF</button>
-        <button data-act="edit">✏️ Edit</button>
-        <button data-act="del" class="del">🗑️ Delete</button>
-      </div>`;
+      <div class="actions"><button data-act="pdf">⬇️ PDF</button><button data-act="edit">✏️ Edit</button><button data-act="del" class="del">🗑️ Delete</button></div>`;
     card.querySelector('[data-act="edit"]').onclick=()=>editEntry(e.id);
     card.querySelector('[data-act="del"]').onclick=()=>deleteEntry(e.id);
     card.querySelector('[data-act="pdf"]').onclick=()=>openPdfChooser(e);
+    card.querySelectorAll("[data-lb]").forEach(img=>img.onclick=()=>openLightbox(img.dataset.lb));
     el.appendChild(card);
   });
 }
 
-/* ---------- PDF export ---------- */
-// Open the chooser. If the entry has no photos there's nothing to toggle, so export directly.
+/* On this day */
+function renderOnThisDay(){
+  const box=$("#otd"); const t=todayISO(); const md=t.slice(5);
+  const past=entries.filter(e=>e.date.slice(5)===md && e.date.slice(0,4)!==t.slice(0,4));
+  if(!past.length){ box.style.display="none"; return; }
+  box.style.display="";
+  box.innerHTML=`<h3>✨ On this day</h3>`+past.sort((a,b)=>b.date.localeCompare(a.date)).map(e=>{
+    const yrs=Number(t.slice(0,4))-Number(e.date.slice(0,4));
+    const snippet=(e.title||htmlToText(e.body)).slice(0,90);
+    return `<div class="memory" data-id="${e.id}"><b>${yrs} year${yrs>1?"s":""} ago</b> — ${escapeHtml(snippet)}${snippet.length>=90?"…":""}</div>`;
+  }).join("");
+  box.querySelectorAll(".memory").forEach(m=>m.onclick=()=>editEntry(m.dataset.id));
+}
+
+/* Calendar */
+function renderCalendar(){
+  const c=$("#calendar");
+  const now=calMonth?new Date(calMonth):new Date();
+  const y=now.getFullYear(),m=now.getMonth();
+  if(!calMonth)calMonth=new Date(y,m,1).toISOString();
+  const first=new Date(y,m,1),startDow=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+  const byDate={};entries.forEach(e=>{(byDate[e.date]=byDate[e.date]||[]).push(e);});
+  let cells="";
+  ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(d=>cells+=`<div class="dow">${d}</div>`);
+  for(let i=0;i<startDow;i++)cells+=`<div class="calcell empty"></div>`;
+  for(let d=1;d<=days;d++){
+    const iso=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const list=byDate[iso]||[];const has=list.length>0;
+    const mood=has?(list.find(e=>e.mood)||{}).mood:null;
+    cells+=`<div class="calcell ${has?"has":""} ${iso===todayISO()?"today":""}" data-date="${iso}">${d}${has?`<span class="cn">${list.length}</span>`:""}${mood?`<span class="cmood">${moodEmoji(mood)}</span>`:""}</div>`;
+  }
+  const label=first.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  c.innerHTML=`<div class="calhead"><button id="prevM">‹</button><div class="mlabel">${label}</div><button id="nextM">›</button></div><div class="calgrid">${cells}</div>`;
+  c.querySelector("#prevM").onclick=()=>{calMonth=new Date(y,m-1,1).toISOString();renderCalendar();};
+  c.querySelector("#nextM").onclick=()=>{calMonth=new Date(y,m+1,1).toISOString();renderCalendar();};
+  c.querySelectorAll(".calcell.has").forEach(cell=>cell.onclick=()=>{ view="list";localStorage.setItem(LS_VIEW,"list");setViewButtons();$("#search").value=cell.dataset.date;renderAll();window.scrollTo({top:document.querySelector(".listhead").offsetTop,behavior:"smooth"});});
+}
+function setViewButtons(){ $("#viewList").classList.toggle("on",view==="list");$("#viewCal").classList.toggle("on",view==="calendar"); }
+
+/* ===================== Trends ===================== */
+function openTrends(){
+  const withMood=sortedEntries().filter(e=>e.mood).reverse();
+  const body=$("#trendsBody");
+  if(!withMood.length){ body.innerHTML=`<h3>No mood data yet</h3><p class="sub">Add a mood to your entries and your trend will appear here.</p>`; $("#statsOverlay").classList.add("open"); return; }
+  const pts=withMood.slice(-30);
+  const W=440,H=120,pad=18,n=pts.length;
+  const x=i=>pad+(n<=1?0:(i*(W-2*pad)/(n-1)));
+  const yv=v=>H-pad-((v-1)/4)*(H-2*pad);
+  let path="",dots="";
+  pts.forEach((e,i)=>{path+=(i?"L":"M")+x(i).toFixed(1)+" "+yv(e.mood).toFixed(1)+" ";dots+=`<circle cx="${x(i).toFixed(1)}" cy="${yv(e.mood).toFixed(1)}" r="3" fill="var(--accent)"></circle>`;});
+  let grid="";[1,2,3,4,5].forEach(v=>{grid+=`<line x1="${pad}" y1="${yv(v)}" x2="${W-pad}" y2="${yv(v)}" stroke="var(--line)" stroke-width="1"></line>`;});
+  const counts=MOODS.map(m=>`<span class="mc">${m.e} <b>${entries.filter(e=>e.mood===m.v).length}</b></span>`).join("");
+  const avg=(withMood.reduce((s,e)=>s+e.mood,0)/withMood.length).toFixed(1);
+  body.innerHTML=`<h3>Your mood over time</h3><p class="sub">Last ${pts.length} entries with a mood · average ${avg}/5 ${moodEmoji(Math.round(avg))}</p>
+    <svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${grid}<path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"></path>${dots}</svg>
+    <div class="moodcounts">${counts}</div>`;
+  $("#statsOverlay").classList.add("open");
+}
+
+/* ===================== PDF ===================== */
 let pdfTarget=null;
 function openPdfChooser(entry){
-  const hasPhotos=(entry.photos||[]).length>0;
-  if(!hasPhotos){ exportPDF(entry,false); return; }
+  const has=(entry.photos||[]).length>0;
+  if(!has){exportPDF(entry,false);return;}
   pdfTarget=entry;
   const pref=localStorage.getItem(LS_PDFPHOTOS);
-  $("#pdfIncludePhotos").checked = pref===null ? true : pref==="1";
+  $("#pdfIncludePhotos").checked=pref===null?true:pref==="1";
   const n=entry.photos.length;
   $("#pdfEntryLabel").textContent=`${fmtDate(entry.date)}${entry.title?" — "+entry.title:""}`;
   $("#pdfPhotoNote").textContent=`This entry has ${n} photo${n>1?"s":""}. Untick to print a text-only version.`;
   $("#pdfOverlay").classList.add("open");
 }
-
-/* one entry per page */
-async function exportPDF(entry, includePhotos){
-  const { jsPDF } = window.jspdf;
-  const doc=new jsPDF({unit:"pt",format:"a4"});
-  const pageW=doc.internal.pageSize.getWidth();
-  const pageH=doc.internal.pageSize.getHeight();
-  const M=56;                       // margin
-  const cw=pageW-M*2;               // content width
-  let y=M;
-
-  function ensure(space){ if(y+space>pageH-M){ doc.addPage(); y=M; } }
-
-  // Header: date
-  doc.setFont("helvetica","bold"); doc.setTextColor(107,92,231); doc.setFontSize(13);
-  doc.text(fmtDate(entry.date), M, y); y+=10;
-  doc.setDrawColor(231,228,240); doc.setLineWidth(1); doc.line(M,y,pageW-M,y); y+=22;
-
-  // Title
-  if(entry.title){
-    doc.setFont("helvetica","bold"); doc.setTextColor(35,32,46); doc.setFontSize(20);
-    const tl=doc.splitTextToSize(entry.title, cw);
-    tl.forEach(line=>{ ensure(26); doc.text(line,M,y); y+=26; });
-    y+=6;
-  }
-
-  // Body
-  doc.setFont("helvetica","normal"); doc.setTextColor(54,50,63); doc.setFontSize(12);
-  const bodyLines=doc.splitTextToSize(entry.body||"", cw);
-  bodyLines.forEach(line=>{ ensure(18); doc.text(line,M,y); y+=18; });
-
-  // Photos (optional)
-  const photos = includePhotos ? (entry.photos||[]) : [];
-  for(const p of photos){
-    const dims=await imgDims(p);
-    let w=cw, h=w*(dims.h/dims.w);
-    const maxH=pageH-M*2;
-    if(h>maxH){ h=maxH; w=h*(dims.w/dims.h); }
-    ensure(h+18); y+=10;
-    try{ doc.addImage(p,"JPEG",M,y,w,h); }catch(e){ try{ doc.addImage(p,"PNG",M,y,w,h);}catch(_){} }
-    y+=h+8;
-  }
-
-  const safeDate=(entry.date||"entry");
-  const safeTitle=(entry.title||"journal").replace(/[^\w-]+/g,"-").slice(0,40);
-  doc.save(`${safeDate}_${safeTitle}.pdf`);
+function imgDims(src){return new Promise(res=>{const i=new Image();i.onload=()=>res({w:i.naturalWidth,h:i.naturalHeight});i.onerror=()=>res({w:1,h:1});i.src=src;});}
+async function renderEntryToDoc(doc,entry,includePhotos,startY){
+  const pageW=doc.internal.pageSize.getWidth(),pageH=doc.internal.pageSize.getHeight(),M=56,cw=pageW-M*2;
+  let y=startY;
+  const ensure=s=>{if(y+s>pageH-M){doc.addPage();y=M;}};
+  doc.setFont("helvetica","bold");doc.setTextColor(107,92,231);doc.setFontSize(13);
+  ensure(20);doc.text(fmtDate(entry.date)+(entry.mood?"   "+MOODS.find(m=>m.v===entry.mood).t:""),M,y);y+=10;
+  doc.setDrawColor(225,222,235);doc.setLineWidth(1);doc.line(M,y,pageW-M,y);y+=22;
+  if(entry.title){doc.setFont("helvetica","bold");doc.setTextColor(35,32,46);doc.setFontSize(20);doc.splitTextToSize(entry.title,cw).forEach(l=>{ensure(26);doc.text(l,M,y);y+=26;});y+=6;}
+  doc.setFont("helvetica","normal");doc.setTextColor(54,50,63);doc.setFontSize(12);
+  doc.splitTextToSize(htmlToText(entry.body),cw).forEach(l=>{ensure(18);doc.text(l,M,y);y+=18;});
+  if((entry.tags||[]).length){ensure(16);doc.setTextColor(120,110,150);doc.setFontSize(11);doc.text("Tags: "+entry.tags.map(t=>"#"+t).join("  "),M,y+4);y+=18;}
+  if(includePhotos)for(const p of(entry.photos||[])){const dm=await imgDims(p);let w=cw,h=w*(dm.h/dm.w);const mh=pageH-M*2;if(h>mh){h=mh;w=h*(dm.w/dm.h);}ensure(h+18);y+=10;try{doc.addImage(p,"JPEG",M,y,w,h);}catch(e){try{doc.addImage(p,"PNG",M,y,w,h);}catch(_){}}y+=h+8;}
+  return y;
+}
+async function exportPDF(entry,includePhotos){
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:"pt",format:"a4"});
+  await renderEntryToDoc(doc,entry,includePhotos,56);
+  doc.save(`${entry.date||"entry"}_${(entry.title||"journal").replace(/[^\w-]+/g,"-").slice(0,40)}.pdf`);
   toast("PDF downloaded 📄");
 }
-function imgDims(src){ return new Promise(res=>{ const i=new Image(); i.onload=()=>res({w:i.naturalWidth,h:i.naturalHeight}); i.onerror=()=>res({w:1,h:1}); i.src=src; }); }
-
-/* ---------- backup import/export ---------- */
-function exportAll(){
-  const blob=new Blob([JSON.stringify(entries,null,2)],{type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-  a.download=`journal-backup-${todayISO()}.json`; a.click(); URL.revokeObjectURL(a.href);
-  toast("Backup downloaded");
-}
-async function importBackup(file){
-  try{
-    const data=JSON.parse(await file.text());
-    if(!Array.isArray(data)) throw 0;
-    const ids=new Set(entries.map(e=>e.id));
-    data.forEach(e=>{ if(e&&e.id&&!ids.has(e.id)) entries.push(e); });
-    persist(); toast("Backup imported");
-  }catch(e){ toast("Couldn't read that file"); }
+async function exportBook(){
+  if(!entries.length){toast("No entries to print yet");return;}
+  toast("Building your journal book…");
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:"pt",format:"a4"});
+  const pageW=doc.internal.pageSize.getWidth(),pageH=doc.internal.pageSize.getHeight();
+  doc.setFont("helvetica","bold");doc.setTextColor(107,92,231);doc.setFontSize(34);
+  doc.text("My Journal",pageW/2,pageH/2-20,{align:"center"});
+  doc.setFont("helvetica","normal");doc.setTextColor(120,110,150);doc.setFontSize(13);
+  const chron=[...entries].sort((a,b)=>a.date.localeCompare(b.date));
+  doc.text(`${chron.length} entries · ${fmtDate(chron[0].date)} – ${fmtDate(chron[chron.length-1].date)}`,pageW/2,pageH/2+12,{align:"center"});
+  for(const e of chron){ doc.addPage(); await renderEntryToDoc(doc,e,true,56); }
+  doc.save(`my-journal-${todayISO()}.pdf`);
+  toast("Journal book downloaded 📖");
 }
 
-/* ============================================================
-   GOOGLE SIGN-IN + DRIVE SYNC
-   ============================================================ */
-function setSync(state, text){
-  const dot=$("#syncDot"); dot.className="dot "+state;
-  $("#syncText").textContent=text;
+/* ===================== Backup ===================== */
+function exportAll(){const blob=new Blob([JSON.stringify(entries,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`journal-backup-${todayISO()}.json`;a.click();URL.revokeObjectURL(a.href);toast("Backup downloaded");}
+async function importBackup(file){try{const data=JSON.parse(await file.text());if(!Array.isArray(data))throw 0;const ids=new Set(entries.map(e=>e.id));data.forEach(e=>{if(e&&e.id&&!ids.has(e.id))entries.push(e);});persist();toast("Backup imported");}catch(e){toast("Couldn't read that file");}}
+function restoreBackup(){try{const b=JSON.parse(localStorage.getItem(LS_BACKUP));if(!b||!Array.isArray(b.data)){toast("No auto-backup found");return;}if(!confirm(`Restore auto-backup from ${new Date(b.ts).toLocaleString()}? This merges saved entries back in.`))return;const ids=new Set(entries.map(e=>e.id));b.data.forEach(e=>{if(e&&e.id&&!ids.has(e.id))entries.push(e);});persist();toast("Auto-backup restored");}catch(e){toast("No auto-backup found");}}
+
+/* ===================== App lock ===================== */
+async function sha(s){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("jrnl::"+s));return[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");}
+async function checkLock(){
+  const hash=localStorage.getItem(LS_PIN);
+  if(!hash)return;
+  $("#lockScreen").classList.add("open");
+  const inp=$("#lockInput");inp.value="";inp.focus();
+  inp.oninput=async()=>{ if(inp.value.length>=4){ if(await sha(inp.value)===hash){ $("#lockScreen").classList.remove("open"); $("#lockErr").textContent=""; } else if(inp.value.length>=6){ $("#lockErr").textContent="Wrong PIN, try again"; inp.value=""; } } };
 }
-window.gapiLoaded=()=>{};
+async function savePin(){const v=$("#pinSet").value.trim();if(!/^\d{4,6}$/.test(v)){toast("Use 4–6 digits");return;}localStorage.setItem(LS_PIN,await sha(v));$("#pinSet").value="";syncSettingsUI();toast("PIN set 🔒");}
+function removePin(){localStorage.removeItem(LS_PIN);syncSettingsUI();toast("PIN removed");}
+
+/* ===================== Google Drive sync ===================== */
+function setSync(state,text){$("#syncDot").className="dot "+state;$("#syncText").textContent=text;}
 function tryInitGoogle(){
-  if(!clientId){ setSync("local","On this device"); $("#authBtn").textContent="Sign in"; return; }
-  // init gapi client
-  if(window.gapi && !gapiReady){
-    gapi.load("client",async()=>{
-      await gapi.client.init({discoveryDocs:["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]});
-      gapiReady=true;
-    });
-  }
-  // init token client
-  if(window.google?.accounts?.oauth2 && !tokenClient){
-    try{
-      tokenClient=google.accounts.oauth2.initTokenClient({
-        client_id:clientId, scope:SCOPES,
-        callback:(resp)=>{
-          if(resp.error){ toast("Sign-in failed"); return; }
-          accessToken=resp.access_token;
-          gapi.client.setToken({access_token:accessToken});
-          $("#authBtn").textContent="Sign out";
-          setSync("syncing","Syncing…");
-          afterSignIn();
-        }
-      });
-      gisReady=true;
-    }catch(e){ console.warn(e); }
+  if(!clientId)return;
+  if(window.gapi&&!gapiReady){gapi.load("client",async()=>{await gapi.client.init({discoveryDocs:["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]});gapiReady=true;});}
+  if(window.google?.accounts?.oauth2&&!tokenClient){
+    try{tokenClient=google.accounts.oauth2.initTokenClient({client_id:clientId,scope:SCOPES,callback:resp=>{
+      if(resp.error){toast("Sign-in failed");return;}
+      accessToken=resp.access_token;gapi.client.setToken({access_token:accessToken});
+      $("#authBtn").textContent="Sign out";setSync("syncing","Syncing…");afterSignIn();
+    }});}catch(e){console.warn(e);}
   }
 }
 function signIn(){
-  if(!clientId){ openSettings(); toast("Add your Google Client ID first"); return; }
-  if(!tokenClient){ tryInitGoogle(); setTimeout(()=>tokenClient&&tokenClient.requestAccessToken(),600); return; }
-  if(accessToken){ // sign out
-    google.accounts.oauth2.revoke(accessToken,()=>{});
-    accessToken=null; driveFileId=null; gapi.client.setToken(null);
-    $("#authBtn").textContent="Sign in"; setSync("local","On this device"); toast("Signed out");
-    return;
-  }
+  if(accessToken){google.accounts.oauth2.revoke(accessToken,()=>{});accessToken=null;driveFileId=null;gapi.client.setToken(null);$("#authBtn").textContent="Sign in";setSync("local","On this device");toast("Signed out");return;}
+  if(!tokenClient){tryInitGoogle();setTimeout(()=>tokenClient&&tokenClient.requestAccessToken(),600);return;}
   tokenClient.requestAccessToken();
 }
-async function afterSignIn(){
-  try{
-    await findDriveFile();
-    if(driveFileId){
-      const remote=await readDriveFile();
-      mergeRemote(remote);
-    }
-    await syncToDrive();
-    setSync("synced","Synced to Drive"); toast("Connected to Google Drive ☁️");
-  }catch(e){ console.warn(e); setSync("local","Sync error — saved locally"); }
-}
-async function findDriveFile(){
-  const r=await gapi.client.drive.files.list({spaces:"appDataFolder",fields:"files(id,name)",q:`name='${DRIVE_FILENAME}'`});
-  driveFileId=r.result.files?.[0]?.id||null;
-}
-async function readDriveFile(){
-  const r=await gapi.client.drive.files.get({fileId:driveFileId,alt:"media"});
-  try{ return JSON.parse(r.body); }catch(e){ return []; }
-}
-function mergeRemote(remote){
-  if(!Array.isArray(remote)) return;
-  const byId=new Map(entries.map(e=>[e.id,e]));
-  remote.forEach(r=>{
-    const local=byId.get(r.id);
-    if(!local){ entries.push(r); byId.set(r.id,r); }
-    else if((r.updated||0)>(local.updated||0)){ Object.assign(local,r); }
-  });
-  saveLocal(); render();
-}
+async function afterSignIn(){try{await findDriveFile();if(driveFileId){mergeRemote(await readDriveFile());}await syncToDrive();setSync("synced","Synced to Drive");toast("Connected to Google Drive ☁️");}catch(e){console.warn(e);setSync("local","Sync error — saved locally");}}
+async function findDriveFile(){const r=await gapi.client.drive.files.list({spaces:"appDataFolder",fields:"files(id,name)",q:`name='${DRIVE_FILENAME}'`});driveFileId=r.result.files?.[0]?.id||null;}
+async function readDriveFile(){const r=await gapi.client.drive.files.get({fileId:driveFileId,alt:"media"});try{return JSON.parse(r.body);}catch(e){return[];}}
+function mergeRemote(remote){if(!Array.isArray(remote))return;const byId=new Map(entries.map(e=>[e.id,e]));remote.forEach(r=>{const l=byId.get(r.id);if(!l){entries.push(r);byId.set(r.id,r);}else if((r.updated||0)>(l.updated||0))Object.assign(l,r);});saveLocal();renderAll();}
 let syncTimer=null;
-function syncToDrive(){
-  if(!accessToken) return;
-  clearTimeout(syncTimer);
-  syncTimer=setTimeout(_syncNow,800); // debounce
-}
-async function _syncNow(){
-  if(!accessToken) return;
-  setSync("syncing","Syncing…");
-  const content=JSON.stringify(entries);
-  const meta={name:DRIVE_FILENAME, parents:driveFileId?undefined:["appDataFolder"]};
-  const boundary="-------journal"+Date.now();
-  const body=
-    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n`+
-    JSON.stringify(driveFileId?{name:DRIVE_FILENAME}:meta)+
-    `\r\n--${boundary}\r\nContent-Type: application/json\r\n\r\n`+content+`\r\n--${boundary}--`;
-  const method=driveFileId?"PATCH":"POST";
-  const url=driveFileId
-    ? `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=multipart`
-    : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
-  try{
-    const res=await fetch(url,{method,headers:{Authorization:"Bearer "+accessToken,"Content-Type":`multipart/related; boundary=${boundary}`},body});
-    const j=await res.json();
-    if(j.id) driveFileId=j.id;
-    setSync("synced","Synced to Drive");
-  }catch(e){ console.warn(e); setSync("local","Sync error — saved locally"); }
+function syncToDrive(){if(!accessToken)return;clearTimeout(syncTimer);syncTimer=setTimeout(_syncNow,800);}
+async function _syncNow(){if(!accessToken)return;setSync("syncing","Syncing…");const content=JSON.stringify(entries);const meta={name:DRIVE_FILENAME,parents:driveFileId?undefined:["appDataFolder"]};const boundary="-----journal"+Date.now();const body=`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n`+JSON.stringify(driveFileId?{name:DRIVE_FILENAME}:meta)+`\r\n--${boundary}\r\nContent-Type: application/json\r\n\r\n`+content+`\r\n--${boundary}--`;const method=driveFileId?"PATCH":"POST";const url=driveFileId?`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=multipart`:`https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;try{const res=await fetch(url,{method,headers:{Authorization:"Bearer "+accessToken,"Content-Type":`multipart/related; boundary=${boundary}`},body});const j=await res.json();if(j.id)driveFileId=j.id;setSync("synced","Synced to Drive");}catch(e){console.warn(e);setSync("local","Sync error — saved locally");}}
+
+/* ===================== Lightbox & overlays ===================== */
+function openLightbox(src){$("#lightboxImg").src=src;$("#lightbox").classList.add("open");}
+function closeOverlays(){$$(".overlay").forEach(o=>o.classList.remove("open"));}
+
+/* ===================== Settings UI ===================== */
+function buildAccentSwatches(){const c=$("#accentSwatches");c.innerHTML="";ACCENTS.forEach(a=>{const s=document.createElement("div");s.className="sw";s.style.background=a;s.dataset.a=a;s.onclick=()=>{localStorage.setItem(LS_ACCENT,a);applyTheme();syncSettingsUI();};c.appendChild(s);});}
+function syncSettingsUI(){
+  const theme=localStorage.getItem(LS_THEME)||"light",accent=localStorage.getItem(LS_ACCENT)||ACCENTS[0],font=localStorage.getItem(LS_FONT)||"sans";
+  $$("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.themeVal===theme));
+  $$("#fontSeg button").forEach(b=>b.classList.toggle("on",b.dataset.font===font));
+  $$("#accentSwatches .sw").forEach(s=>s.classList.toggle("sel",s.dataset.a===accent));
+  $("#lockStatus").textContent=localStorage.getItem(LS_PIN)?"PIN is ON. The journal asks for your code each time it opens on this device.":"No PIN set. A PIN asks for a code each time the journal opens on this device.";
+  const b=localStorage.getItem(LS_BACKUP);$("#backupStatus").textContent=b?`Last auto-backup: ${new Date(JSON.parse(b).ts).toLocaleString()}. A safety copy is saved automatically on every change.`:"Auto-backup keeps a safety copy on this device.";
+  $("#clientId").value=clientId;
 }
 
-/* ---------- modals ---------- */
-function openSettings(){ $("#clientId").value=clientId; $("#settingsOverlay").classList.add("open"); }
-function openEmoji(){ $("#emojiOverlay").classList.add("open"); }
-function closeOverlays(){ document.querySelectorAll(".overlay").forEach(o=>o.classList.remove("open")); }
-
-/* ---------- wire up ---------- */
+/* ===================== Init ===================== */
 function init(){
-  loadLocal();
-  buildEmojiBar(); buildEmojiGrid();
-  resetComposer(); render();
+  applyTheme(); loadLocal(); checkLock();
+  buildEmojiBar();buildEmojiGrid();buildMoodRow();buildAccentSwatches();setupVoice();
+  setViewButtons(); resetComposer(); renderAll();
 
   $("#saveBtn").onclick=saveEntry;
   $("#cancelEdit").onclick=resetComposer;
   $("#photoBtn").onclick=()=>$("#photoInput").click();
-  $("#photoInput").onchange=e=>{ handleFiles(e.target.files); e.target.value=""; };
-  $("#search").oninput=render;
+  $("#photoInput").onchange=e=>{handleFiles(e.target.files);e.target.value="";};
+  $("#search").oninput=renderAll;
   $("#authBtn").onclick=signIn;
+  $("#themeBtn").onclick=toggleTheme;
+  $("#statsBtn").onclick=openTrends;
 
-  $("#settingsBtn").onclick=openSettings;
-  $("#saveSettings").onclick=()=>{
-    const newId=$("#clientId").value.trim();
-    const changed = newId!==clientId;
-    clientId=newId;
-    localStorage.setItem(LS_CLIENTID,clientId);
-    // If the Client ID changed, drop any token client built from the old one
-    // so the next sign-in uses the new ID (fixes 401 invalid_client after editing).
-    if(changed){
-      if(accessToken){ try{ google.accounts.oauth2.revoke(accessToken,()=>{}); }catch(e){} }
-      accessToken=null; tokenClient=null; driveFileId=null;
-      if(window.gapi&&gapi.client) gapi.client.setToken(null);
-      $("#authBtn").textContent="Sign in"; setSync("local","On this device");
-    }
-    closeOverlays(); tryInitGoogle();
-    toast(clientId?"Saved — tap Sign in to connect Drive":"Saved (local only)");
-  };
-  $("#pdfGo").onclick=()=>{
-    const inc=$("#pdfIncludePhotos").checked;
-    localStorage.setItem(LS_PDFPHOTOS, inc?"1":"0");
-    closeOverlays();
-    if(pdfTarget) exportPDF(pdfTarget, inc);
-  };
+  $$(".toolbar [data-cmd]").forEach(b=>b.onclick=()=>execCmd(b.dataset.cmd));
+  $("#micBtn").onclick=toggleVoice;
+  $("#tagInput").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===","){e.preventDefault();addDraftTag(e.target.value);e.target.value="";}});
 
+  $("#viewList").onclick=()=>{view="list";localStorage.setItem(LS_VIEW,"list");setViewButtons();renderAll();};
+  $("#viewCal").onclick=()=>{view="calendar";localStorage.setItem(LS_VIEW,"calendar");setViewButtons();renderAll();};
+
+  $("#settingsBtn").onclick=()=>{syncSettingsUI();$("#settingsOverlay").classList.add("open");};
+  $$("#themeSeg button").forEach(b=>b.onclick=()=>{localStorage.setItem(LS_THEME,b.dataset.themeVal);applyTheme();syncSettingsUI();});
+  $$("#fontSeg button").forEach(b=>b.onclick=()=>{localStorage.setItem(LS_FONT,b.dataset.font);applyTheme();syncSettingsUI();});
+  $("#savePin").onclick=savePin;$("#removePin").onclick=removePin;
   $("#exportAll").onclick=exportAll;
   $("#importBtn").onclick=()=>$("#importInput").click();
-  $("#importInput").onchange=e=>{ if(e.target.files[0]) importBackup(e.target.files[0]); e.target.value=""; };
-  document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeOverlays);
-  document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{ if(e.target===o) closeOverlays(); }));
+  $("#importInput").onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value="";};
+  $("#restoreBackup").onclick=restoreBackup;
+  $("#bookPdf").onclick=exportBook;
+  $("#saveClient").onclick=()=>{const v=$("#clientId").value.trim();if(v&&!v.includes(".apps.googleusercontent.com")){toast("That doesn't look like a Client ID");return;}clientId=v||DEFAULT_CLIENT_ID;localStorage.setItem(LS_CLIENTID,clientId);accessToken=null;tokenClient=null;driveFileId=null;$("#authBtn").textContent="Sign in";setSync("local","On this device");tryInitGoogle();toast("Saved");};
 
-  // Keyboard: Ctrl/Cmd+Enter saves
-  $("#body").addEventListener("keydown",e=>{ if((e.metaKey||e.ctrlKey)&&e.key==="Enter") saveEntry(); });
+  $("#pdfGo").onclick=()=>{const inc=$("#pdfIncludePhotos").checked;localStorage.setItem(LS_PDFPHOTOS,inc?"1":"0");closeOverlays();if(pdfTarget)exportPDF(pdfTarget,inc);};
+  $$("[data-close]").forEach(b=>b.onclick=closeOverlays);
+  $$(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeOverlays();}));
+  $("#lightbox").onclick=()=>$("#lightbox").classList.remove("open");
 
-  // Try Google init after libs load
-  let tries=0; const t=setInterval(()=>{ tries++; if((window.google&&window.gapi)||tries>40){ clearInterval(t); tryInitGoogle(); } },300);
+  let tries=0;const t=setInterval(()=>{tries++;if((window.google&&window.gapi)||tries>40){clearInterval(t);tryInitGoogle();}},300);
 
-  // Register a tiny service worker for installability (works when hosted).
+  // Offline support: cache app shell + libraries, network-first for the page so updates still arrive.
   if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-    const swCode=`self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>self.clients.claim());self.addEventListener("fetch",()=>{});`;
-    const swURL=URL.createObjectURL(new Blob([swCode],{type:"text/javascript"}));
-    navigator.serviceWorker.register(swURL).catch(()=>{});
+    const sw=`
+      const C="journal-v3";
+      const ASSETS=[location.pathname,"https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"];
+      self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(ASSETS).catch(()=>{})));});
+      self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
+      self.addEventListener("fetch",e=>{
+        const u=new URL(e.request.url);
+        if(u.hostname.includes("googleapis.com")||u.hostname.includes("google.com")||u.hostname.includes("gstatic.com"))return;
+        if(e.request.mode==="navigate"){e.respondWith(fetch(e.request).then(r=>{caches.open(C).then(c=>c.put(e.request,r.clone()));return r;}).catch(()=>caches.match(e.request).then(m=>m||caches.match(location.pathname))));return;}
+        e.respondWith(caches.match(e.request).then(m=>m||fetch(e.request).then(r=>{if(r.ok&&e.request.method==="GET")caches.open(C).then(c=>c.put(e.request,r.clone()));return r;}).catch(()=>m)));
+      });`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"text/javascript"}))).catch(()=>{});
   }
-  // Inject a web app manifest so it can be installed to a home screen.
-  const manifest={name:"My Journal",short_name:"Journal",display:"standalone",background_color:"#f6f5fb",theme_color:"#6b5ce7",start_url:".",
-    icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236b5ce7'/%3E%3Ctext y='.9em' x='12' font-size='70'%3E%F0%9F%93%94%3C/text%3E%3C/svg%3E",sizes:"any",type:"image/svg+xml"}]};
-  const ml=document.createElement("link"); ml.rel="manifest";
-  ml.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:"application/json"}));
-  document.head.appendChild(ml);
+  const manifest={name:"My Journal",short_name:"Journal",display:"standalone",background_color:"#f6f5fb",theme_color:"#6b5ce7",start_url:".",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236b5ce7'/%3E%3Ctext y='.9em' x='12' font-size='70'%3E%F0%9F%93%94%3C/text%3E%3C/svg%3E",sizes:"any",type:"image/svg+xml"}]};
+  const ml=document.createElement("link");ml.rel="manifest";ml.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:"application/json"}));document.head.appendChild(ml);
 }
 document.addEventListener("DOMContentLoaded",init);
 </script>
