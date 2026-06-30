@@ -610,8 +610,18 @@ function init(){
 
   $("#settingsBtn").onclick=openSettings;
   $("#saveSettings").onclick=()=>{
-    clientId=$("#clientId").value.trim();
+    const newId=$("#clientId").value.trim();
+    const changed = newId!==clientId;
+    clientId=newId;
     localStorage.setItem(LS_CLIENTID,clientId);
+    // If the Client ID changed, drop any token client built from the old one
+    // so the next sign-in uses the new ID (fixes 401 invalid_client after editing).
+    if(changed){
+      if(accessToken){ try{ google.accounts.oauth2.revoke(accessToken,()=>{}); }catch(e){} }
+      accessToken=null; tokenClient=null; driveFileId=null;
+      if(window.gapi&&gapi.client) gapi.client.setToken(null);
+      $("#authBtn").textContent="Sign in"; setSync("local","On this device");
+    }
     closeOverlays(); tryInitGoogle();
     toast(clientId?"Saved — tap Sign in to connect Drive":"Saved (local only)");
   };
