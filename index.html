@@ -252,7 +252,12 @@ const SCOPES = "https://www.googleapis.com/auth/drive.appdata";
 let entries = [];          // [{id, date, title, body, photos:[dataURL], updated}]
 let draftPhotos = [];      // photos staged in composer
 let editingId = null;      // entry being edited, or null
-let clientId = localStorage.getItem(LS_CLIENTID) || "";
+// Your Google OAuth Client ID is baked in so EVERY device works with zero per-device setup.
+// (A Client ID is a public identifier — safe to include in the page.)
+const DEFAULT_CLIENT_ID = "1033173407311-s4nf1e5hekohneso9n5pura3aqdi4rm4.apps.googleusercontent.com";
+// Always trust the baked-in ID; ignore any stale/corrupted value a device may have saved before.
+let clientId = DEFAULT_CLIENT_ID;
+try{ localStorage.setItem(LS_CLIENTID, DEFAULT_CLIENT_ID); }catch(e){}
 let tokenClient = null;
 let accessToken = null;
 let gapiReady = false, gisReady = false;
